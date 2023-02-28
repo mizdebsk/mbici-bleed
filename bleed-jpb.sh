@@ -1,5 +1,6 @@
 #!/bin/sh
 set -eu
+exec 3>&1 >&2
 
 name=javapackages-bootstrap
 version=2.0.0
@@ -16,7 +17,15 @@ rm -rf upstream.git downstream
 git clone --bare $upstream_git_repo upstream.git
 git clone $downstream_git_repo downstream
 
-upstream_commit=$(git -C upstream.git rev-parse "${upstream_ref}" | sed 's/\(.......\).*/\1/')
+upstream_commit_full=$(git -C upstream.git rev-parse "${upstream_ref}")
+if [[ -d /mnt/nfs/mbi-cache/distgit/${upstream_commit_full} ]]; then
+    echo ${upstream_commit_full} >&3
+    echo === ${upstream_commit_full} ===
+    echo /mnt/nfs/mbi-cache/distgit/${upstream_commit_full}
+    exit 0
+fi
+
+upstream_commit=$(echo "${upstream_commit_full}" | sed 's/\(.......\).*/\1/')
 upstream_commit_date=$(git log -1 --format=%cs | sed s/-//g)
 
 git -C downstream reset --hard ${downstream_ref}
@@ -62,11 +71,9 @@ rpmdev-bumpspec -n "${rpm_version}" -c "Automated snapshot packaging" downstream
 git -C downstream add bleed-stamp ${name}.spec sources ${name}-${rpm_version}.tar.gz
 git -C downstream commit -m "Automated snapshot packaging"
 
-downstream_commit=$(git -C downstream rev-parse HEAD)
+mkdir /mnt/nfs/mbi-cache/distgit/${upstream_commit_full}
+git --git-dir downstream/.git --work-tree /mnt/nfs/mbi-cache/distgit/${upstream_commit_full} reset --hard
 
-mkdir /mnt/nfs/mbi-cache/distgit/${downstream_commit}
-git --git-dir downstream/.git --work-tree /mnt/nfs/mbi-cache/distgit/${downstream_commit} reset --hard
-
-
-echo === ${downstream_commit} ===
-echo /mnt/nfs/mbi-cache/distgit/${downstream_commit}
+echo ${upstream_commit_full} >&3
+echo === ${upstream_commit_full} ===
+echo /mnt/nfs/mbi-cache/distgit/${upstream_commit_full}
