@@ -33,9 +33,10 @@ mkdir test
 bleed_jpt=$(./bleed-jpt.sh)
 bleed_jpb=$(./bleed-jpb.sh)
 bleed_xmvn=$(./bleed-xmvn.sh)
+bleed_xmvngen=$(./bleed-xmvn-gen.sh)
 
 echo === Generating Test Subject from PRs... >&2
-./local-subject-bleed.py -bleed-jpt "${bleed_jpt}" -bleed-xmvn "${bleed_xmvn}" -bleed-jpb "${bleed_jpb}" -plan "$plan" >test/subject.xml
+./local-subject-bleed.py -bleed-jpt "${bleed_jpt}" -bleed-xmvn "${bleed_xmvn}" -bleed-xmvngen "${bleed_xmvngen}" -bleed-jpb "${bleed_jpb}" -plan "$plan" >test/subject.xml
 
 echo === Generating Workflow... >&2
 mbici-wf generate -plan "$plan" \

@@ -33,6 +33,7 @@ parser.add_argument("-scm", default="/home/kojan/tmp/fp", help="SCM base URL")
 parser.add_argument("-ref", default="HEAD", help="Default SCM commit or ref")
 parser.add_argument("-bleed-jpt", required=True)
 parser.add_argument("-bleed-xmvn", required=True)
+parser.add_argument("-bleed-xmvngen", required=True)
 parser.add_argument("-bleed-jpb", required=True)
 parser.add_argument("-lookaside", default="https://src.fedoraproject.org/lookaside/pkgs/rpms", help="Lookaside cache base URL")
 args = parser.parse_args()
@@ -48,6 +49,7 @@ for component in components:
 
 commits['javapackages-tools'] = args.bleed_jpt
 commits['xmvn'] = args.bleed_xmvn
+commits['xmvn-generator'] = args.bleed_xmvngen
 commits['javapackages-bootstrap'] = args.bleed_jpb
 
 print(f'<subject>')
