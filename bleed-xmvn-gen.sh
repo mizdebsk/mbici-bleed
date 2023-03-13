@@ -3,7 +3,7 @@ set -eu
 exec 3>&1 >&2
 
 name=xmvn-generator
-version=5.0.0
+version=2.0.0
 #upstream_git_repo=https://github.com/fedora-java/javapackages.git
 #upstream_ref=master
 #downstream_git_repo=https://src.fedoraproject.org/rpms/${name}.git
@@ -26,7 +26,7 @@ if [[ -d /mnt/nfs/mbi-cache/distgit/${upstream_commit_full} ]]; then
 fi
 
 upstream_commit=$(echo "${upstream_commit_full}" | sed 's/\(.......\).*/\1/')
-upstream_commit_date=$(git log -1 --format=%cs | sed s/-//g)
+upstream_commit_date=$(git -C upstream.git log -1 --format=%cs | sed s/-//g)
 
 git -C downstream reset --hard ${downstream_ref}
 touch downstream/bleed-stamp

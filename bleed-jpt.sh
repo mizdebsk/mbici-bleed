@@ -26,7 +26,7 @@ if [[ -d /mnt/nfs/mbi-cache/distgit/${upstream_commit_full} ]]; then
 fi
 
 upstream_commit=$(echo "${upstream_commit_full}" | sed 's/\(.......\).*/\1/')
-upstream_commit_date=$(git log -1 --format=%cs | sed s/-//g)
+upstream_commit_date=$(git -C upstream.git log -1 --format=%cs | sed s/-//g)
 
 git -C downstream reset --hard ${downstream_ref}
 touch downstream/bleed-stamp
